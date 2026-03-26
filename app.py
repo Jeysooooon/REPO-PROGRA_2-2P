@@ -8,7 +8,7 @@ conn = mysql.connector.connect(
             user='root',
             password='',
             database='PROGRA_2-2P',
-            ssl_disabled=True  # Desactiva SSL
+            ssl_disabled=True
         )
 
 
