@@ -1,8 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from db import get_connection
 
-@app.route("/productos/")
+bpProductos = Blueprint('Clientes', __name__, url_prefix='/Clientes')
+
+@bpProductos.route("/")
 def productos_index():
+    conn = get_connection
     cur = conn.cursor()
     cur.execute("SELECT * FROM productos")
     datos = cur.fetchall()
@@ -11,9 +14,10 @@ def productos_index():
 
 
 
-@app.route("/productos/agregar", methods=["GET", "POST"])
+@app.route("/agregar", methods=["GET", "POST"])
 def productos_agregar_datos():
     if request.method == 'POST':
+        conn = get_connection
         cursor = conn.cursor()
         nombre= request.form['ProNombre']
         descripcion = request.form['ProDescripcion']
@@ -27,9 +31,10 @@ def productos_agregar_datos():
          return render_template('/productos/agregar.html')
 
 
-@app.route("/productos/editar/<string:codigo>", methods=["GET", "POST"])
+@app.route("/editar/<string:codigo>", methods=["GET", "POST"])
 def productos_editar_datos(codigo):
     if request.method == 'GET':
+        conn = get_connection
         cur = conn.cursor()
         cur.execute("SELECT * FROM productos where ProCodigo=%s", (codigo,))
         producto = cur.fetchone()
@@ -46,15 +51,17 @@ def productos_editar_datos(codigo):
         return redirect(url_for('productos_index'))
 
     
-@app.route("/productos/eliminar/<string:codigo>", methods=["GET", "POST"])
+@app.route("/eliminar/<string:codigo>", methods=["GET", "POST"])
 def productos_eliminar_datos(codigo):
     if request.method == 'GET':
+        conn = get_connection
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM productos WHERE ProCodigo = %s", (codigo,))
         producto = cursor.fetchone()
         return render_template('/productos/eliminar.html', producto=producto)
         
     elif request.method == 'POST':
+        conn = get_connection
         cursor = conn.cursor()
         cursor.execute("DELETE FROM productos WHERE ProCodigo = %s", (codigo,))
         conn.commit()

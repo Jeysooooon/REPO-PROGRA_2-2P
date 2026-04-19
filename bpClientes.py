@@ -1,8 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from db import get_connection
 
-@app.route("/clientes/")
+bpClientes = Blueprint('Clientes', __name__, url_prefix='/Clientes')
+
+@bpClientes.route("/")
 def clientes_index():
+    conn = get_connection
     cur = conn.cursor()
     cur.execute("SELECT * FROM clientes")
     datos = cur.fetchall()
@@ -10,9 +13,10 @@ def clientes_index():
     return render_template('clientes/index.html', lista_clientes=datos)
 
 
-@app.route("/clientes/agregar", methods=["GET", "POST"])
+@app.route("/agregar", methods=["GET", "POST"])
 def agregar_datos():
     if request.method == 'POST':
+        conn = get_connection
         cursor = conn.cursor()
         nombre= request.form['CliNombre']
         apellido = request.form['CliApellido']
@@ -26,9 +30,10 @@ def agregar_datos():
          return render_template('/clientes/agregar.html')
 
 
-@app.route("/clientes/editar/<string:codigo>",  methods=["GET","POST"])
+@app.route("/editar/<string:codigo>",  methods=["GET","POST"])
 def editar(codigo):
     if request.method == 'GET':
+        conn = get_connection
         cur = conn.cursor()
         cur.execute("SELECT * FROM clientes where CliCodigo=%s", (codigo,))
         cliente = cur.fetchone()
@@ -45,9 +50,10 @@ def editar(codigo):
         return redirect(url_for('clientes_index'))
 
 
-@app.route("/clientes/eliminar/<string:codigo>",  methods=["GET","POST"])
+@app.route("/eliminar/<string:codigo>",  methods=["GET","POST"])
 def eliminar(codigo):
     if request.method == 'GET':
+        conn = get_connection
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM clientes where CliCodigo=%s", (codigo,))
         cliente = cursor.fetchone()

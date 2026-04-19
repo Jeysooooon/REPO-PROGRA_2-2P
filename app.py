@@ -1,7 +1,14 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for
+from flask import Flask, render_template
+
+from bpClientes import bpClientes
+from bpProductos import bpProductos
+import bpProductos
+
 
 app = Flask(__name__)
 
+app.register_blueprint(bpClientes)
+app.register_blueprint(bpProductos)
 
 
 @app.route("/")
