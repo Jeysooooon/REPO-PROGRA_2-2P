@@ -1,19 +1,22 @@
 from flask import Flask, render_template
 
-from bpClientes import bpClientes
-from bpProductos import bpProductos
+from bpClientes import bpclientes
+from bpProductos import bpproductos
+from bpProveedores import bpproveedores
 import bpProductos
 
 
 app = Flask(__name__)
 
-app.register_blueprint(bpClientes)
-app.register_blueprint(bpProductos)
+app.register_blueprint(bpclientes)
+app.register_blueprint(bpproductos)
+app.register_blueprint(bpproveedores)
 
 
 @app.route("/")
 def index():
     return render_template('index.html')
+
 
 
 if __name__ == "__main__":

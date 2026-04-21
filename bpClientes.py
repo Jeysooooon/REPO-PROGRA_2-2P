@@ -1,11 +1,13 @@
+
 from flask import Blueprint, render_template, request, redirect, url_for
 from db import get_connection
 
-bpClientes = Blueprint('Clientes', __name__, url_prefix='/Clientes')
+bpclientes = Blueprint('clientes', __name__, url_prefix='/clientes')
 
-@bpClientes.route("/")
+
+@bpclientes.route("/")
 def clientes_index():
-    conn = get_connection
+    conn = get_connection()
     cur = conn.cursor()
     cur.execute("SELECT * FROM clientes")
     datos = cur.fetchall()
@@ -13,10 +15,10 @@ def clientes_index():
     return render_template('clientes/index.html', lista_clientes=datos)
 
 
-@app.route("/agregar", methods=["GET", "POST"])
+@bpclientes.route("/agregar", methods=["GET", "POST"])
 def agregar_datos():
     if request.method == 'POST':
-        conn = get_connection
+        conn = get_connection()
         cursor = conn.cursor()
         nombre= request.form['CliNombre']
         apellido = request.form['CliApellido']
@@ -30,10 +32,10 @@ def agregar_datos():
          return render_template('/clientes/agregar.html')
 
 
-@app.route("/editar/<string:codigo>",  methods=["GET","POST"])
+@bpclientes.route("/editar/<string:codigo>",  methods=["GET","POST"])
 def editar(codigo):
     if request.method == 'GET':
-        conn = get_connection
+        conn = get_connection()
         cur = conn.cursor()
         cur.execute("SELECT * FROM clientes where CliCodigo=%s", (codigo,))
         cliente = cur.fetchone()
@@ -50,15 +52,16 @@ def editar(codigo):
         return redirect(url_for('clientes_index'))
 
 
-@app.route("/eliminar/<string:codigo>",  methods=["GET","POST"])
+@bpclientes.route("/eliminar/<string:codigo>",  methods=["GET","POST"])
 def eliminar(codigo):
     if request.method == 'GET':
-        conn = get_connection
+        conn = get_connection()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM clientes where CliCodigo=%s", (codigo,))
         cliente = cursor.fetchone()
         return render_template('/clientes/eliminar.html', cliente=cliente)
     elif request.method=='POST': 
+        conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(" delete from clientes where CliCodigo=%s", (codigo,))
         conn.commit()
